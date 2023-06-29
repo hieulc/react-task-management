@@ -21,6 +21,7 @@ import axios from "axios";
 import AssigneeShow from "./AssigneeShow";
 import NotificationDialog from "./NotificationDialog";
 import { Draggable } from "react-beautiful-dnd";
+import TaskCompleteCheckbox from "./TaskCompleteCheckbox";
 
 function Task({
   element,
@@ -96,7 +97,9 @@ function Task({
       : null;
   }, [task.pos]);
 
-  const conditionalStyle = isOverDue
+  const conditionalStyle = task.completed
+    ? "show_green_background"
+    : isOverDue
     ? "show_red_background"
     : "show_normal_due_date";
 
@@ -485,6 +488,18 @@ function Task({
     setOpenDialog(false);
   };
 
+  const setTaskCompleted = async (isCompleted) => {
+    const response = await axios.get(TASK_API + `/completed/${task.taskId}`, {
+      params: {
+        completed: isCompleted,
+      },
+      headers,
+    });
+
+    const newTask = { ...task, completed: isCompleted };
+    setTask(newTask);
+  };
+
   const confirmDialog = (
     <NotificationDialog
       onOpen={handleOpenDialog}
@@ -499,12 +514,20 @@ function Task({
     <div className={styles.card_due_date}>
       <h3 className={styles.card_due_date_title}>Due date</h3>
       <div className={styles.card_due_date_content}>
+        <TaskCompleteCheckbox
+          isComplete={task.completed}
+          handleCheckbox={setTaskCompleted}
+        />
         <div className={styles.card_due_date_button} onClick={openCalendar}>
           <span className={styles.card_due_date_text}>
             {DateFomat} at {TimeFormat}
           </span>
-          {isOverDue && (
-            <span className={styles.card_due_date_status}>overdue</span>
+          {task.completed ? (
+            <span className={styles.card_completed_status}>completed</span>
+          ) : (
+            isOverDue && (
+              <span className={styles.card_due_date_status}>overdue</span>
+            )
           )}
         </div>
       </div>

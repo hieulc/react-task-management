@@ -17,6 +17,7 @@ function AdminTable() {
             <TableCell>Assignee</TableCell>
             <TableCell>Task</TableCell>
             <TableCell>Completed</TableCell>
+            <TableCell>Working Hours</TableCell>
           </TableRow>
         </TableHead>
         <TableBody></TableBody>

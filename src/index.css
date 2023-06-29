@@ -241,6 +241,11 @@ body {
   font-weight: bold;
 }
 
+.show_green_background {
+  color: #fff;
+  background-color: #1f845a;
+}
+
 .show_red_background {
   color: #ae2a19;
   background-color: #ffedeb;
