@@ -9,6 +9,7 @@ import {
   AiOutlineClose,
   AiOutlineClockCircle,
   AiOutlineCheck,
+  AiOutlineCalendar,
 } from "react-icons/ai";
 import { HiOutlineArchiveBox } from "react-icons/hi2";
 import { IoMdTime } from "react-icons/io";
@@ -22,6 +23,7 @@ import AssigneeShow from "./AssigneeShow";
 import NotificationDialog from "./NotificationDialog";
 import { Draggable } from "react-beautiful-dnd";
 import TaskCompleteCheckbox from "./TaskCompleteCheckbox";
+import WorkingHours from "./PopUpWorkingHours";
 
 function Task({
   element,
@@ -49,6 +51,7 @@ function Task({
   const [isClicked, setIsClicked] = useState([]);
   const [isArchived, setIsArchived] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [isOpenWorkingHour, setIsOpenWorkingHour] = useState(false);
 
   const projectMembers = members;
   const user = JSON.parse(localStorage.getItem("user"));
@@ -258,6 +261,14 @@ function Task({
     setIsOpenCalendar(false);
   };
 
+  const openWorkingHours = () => {
+    setIsOpenWorkingHour(!isOpenWorkingHour);
+  };
+
+  const closeWorkingHours = () => {
+    setIsOpenWorkingHour(false);
+  };
+
   const openPopUpPriority = () => {
     setIsOpenPriority(!isOpenPriority);
   };
@@ -347,12 +358,27 @@ function Task({
     } else return;
   };
 
+  const calcWorkingDays = (endDate) => {
+    const startDate = new Date().getTime();
+    const workingDays = Math.ceil((endDate - startDate) / (1000 * 3600 * 24));
+    if (workingDays <= 0) {
+      return 0;
+    } else if (workingDays <= 1) {
+      return 1;
+    } else {
+      return workingDays;
+    }
+  };
+
   const addDueDate = async (dueDate) => {
+    // const workingDays = calcWorkingDays(dueDate);
+
     const response = await axios.post(
       TASK_API + `/due-date/${element.taskId}`,
       {
         taskId: element.taskId,
         dueDate,
+        workingDays,
       },
       {
         headers,
@@ -367,6 +393,23 @@ function Task({
     setHasDueDate(dueDate);
     checkIsTaskOverDue(dueDate);
     setIsOpenCalendar(false);
+  };
+
+  const addWorkingHour = async (days) => {
+    const response = await axios.post(
+      TASK_API + "/working-days",
+      {
+        taskId: element.taskId,
+        workingDays: days,
+      },
+      {
+        headers,
+      }
+    );
+
+    const newTask = { ...task, workingDays: days };
+    setTask(newTask);
+    setIsOpenWorkingHour(false);
   };
 
   const addPriority = (taskPriority) => {
@@ -402,6 +445,34 @@ function Task({
     });
 
     setIsArchived(true);
+  };
+
+  const calcHoursToCompleteTask = () => {
+    const taskCreatedDate = new Date(task.createdDate);
+    const now = new Date().getTime();
+
+    const hoursToComplete = Math.ceil((now - taskCreatedDate) / (1000 * 3600));
+
+    return hoursToComplete;
+  };
+
+  const setTaskCompleted = async (isCompleted) => {
+    let hoursToComplete = 0;
+    if (isCompleted === true) {
+      hoursToComplete = calcHoursToCompleteTask();
+    }
+
+    const response = await axios.get(TASK_API + `/completed/${task.taskId}`, {
+      params: {
+        completed: isCompleted,
+        hoursToComplete,
+      },
+      headers,
+    });
+
+    const newTask = { ...task, completed: isCompleted, hoursToComplete };
+
+    setTask(newTask);
   };
 
   const renderedProjectMembers = projectMembers.map((member) => {
@@ -467,6 +538,16 @@ function Task({
     <PopUpCalendar onClose={closeCalendar} onAddDueDate={addDueDate} />
   );
 
+  const workingDays = task.workingDays;
+
+  const popUpWorkingHours = (
+    <WorkingHours
+      onClose={closeWorkingHours}
+      hours={workingDays}
+      onAddWorkingHour={addWorkingHour}
+    />
+  );
+
   const popUpPriorty = (
     <PopUpPriority
       onClose={closePopUpPriority}
@@ -486,18 +567,6 @@ function Task({
   const handleConfirmDialog = () => {
     setArchived();
     setOpenDialog(false);
-  };
-
-  const setTaskCompleted = async (isCompleted) => {
-    const response = await axios.get(TASK_API + `/completed/${task.taskId}`, {
-      params: {
-        completed: isCompleted,
-      },
-      headers,
-    });
-
-    const newTask = { ...task, completed: isCompleted };
-    setTask(newTask);
   };
 
   const confirmDialog = (
@@ -557,6 +626,29 @@ function Task({
     </div>
   );
 
+  const cardDays = (
+    <div
+      className={styles.card_priority}
+      style={{ marginLeft: hasPriority || hasDueDate ? "6px" : `-6px` }}
+    >
+      <h3 className={styles.card_due_date_title}>Estimate</h3>
+      <div className={`${styles.card_due_date_content}`}>
+        <div
+          className={styles.card_priority_button}
+          style={{
+            backgroundColor: `#E2B206`,
+            color: `#533f04`,
+          }}
+          onClick={openWorkingHours}
+        >
+          <span className={styles.card_priority_text}>
+            {task.workingDays === 1 ? "1 day" : `${task.workingDays} days`}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+
   const modal = (
     <TaskModal onClose={handleClose}>
       <div>
@@ -586,6 +678,7 @@ function Task({
             <div className={styles.task_modal_priority_sign}>
               {hasPriority && cardPriority}
             </div>
+            <div className={styles.task_modal_priority_sign}>{cardDays}</div>
           </div>
           <div className={styles.task_modal_container}>
             <div className={styles.task_modal_main_col}>
@@ -635,7 +728,7 @@ function Task({
                     <div className={styles.inline_style}>
                       <div className={styles.icon_sm}>
                         <span>
-                          <IoMdTime />
+                          <AiOutlineCalendar />
                         </span>
                       </div>
                       <div>
@@ -655,6 +748,7 @@ function Task({
                       </div>
                     </div>
                   </a>
+
                   <h3 style={{ marginTop: "20px" }}>Actions</h3>
                   <a className={styles.button_link} onClick={handleOpenDialog}>
                     <div className={styles.inline_style}>
@@ -665,6 +759,18 @@ function Task({
                       </div>
                       <div>
                         <span>Archive</span>
+                      </div>
+                    </div>
+                  </a>
+                  <a className={styles.button_link} onClick={openWorkingHours}>
+                    <div className={styles.inline_style}>
+                      <div className={styles.icon_sm}>
+                        <span>
+                          <IoMdTime />
+                        </span>
+                      </div>
+                      <div>
+                        <span>Estimate</span>
                       </div>
                     </div>
                   </a>
@@ -738,6 +844,7 @@ function Task({
         </div>
         {isOpenCalendar && popUpCalendar}
         {isOpenPriority && popUpPriorty}
+        {isOpenWorkingHour && popUpWorkingHours}
         {openDialog && confirmDialog}
       </>
     );

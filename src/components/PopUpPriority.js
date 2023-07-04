@@ -47,11 +47,8 @@ function PopUpPriority({ onClose, onAddPriority, onOpenPopUp }) {
 
   const renderedPriorities = priorities.map((priority) => {
     return (
-      <li>
-        <label
-          className={styles.list_priority_label}
-          key={priority.priorityName}
-        >
+      <li key={priority.priorityName}>
+        <label className={styles.list_priority_label}>
           <span className={styles.list_priority_element}>
             <div
               className={styles.label_element}

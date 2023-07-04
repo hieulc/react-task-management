@@ -25,7 +25,7 @@ function ProjectAccordion({ project, setExpandedValue, expandedValue }) {
           </h2>
         </AccordionSummary>
         <AccordionDetails>
-          <AdminTable />
+          <AdminTable id={project.projectId} />
         </AccordionDetails>
       </Accordion>
     </>

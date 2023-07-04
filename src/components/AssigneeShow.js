@@ -1,22 +1,45 @@
 import { useState } from "react";
 import styles from "../login.module.css";
-import { AiOutlineClose } from "react-icons/ai";
+import { Avatar, AvatarGroup, Stack, Tooltip } from "@mui/material";
 
-function AssigneeShow({ assignees, onRemoveAssignee }) {
-  const [isHovering, setIsHovering] = useState();
+function stringToColor(string) {
+  let hash = 0;
+  let i;
 
-  const handleMouseOver = (id) => {
-    setIsHovering(id);
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+
+  console.log(color);
+  return color;
+}
+
+function stringAvatar(name) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+      height: 30,
+      width: 30,
+      fontSize: 14,
+      "&:hover": {
+        opacity: 0.8,
+        cursor: "pointer",
+      },
+    },
+    children: `${name.split(" ")[0][0].toUpperCase()}${name
+      .split(" ")[1][0]
+      .toUpperCase()}`,
   };
+}
 
-  const handleMouseOut = () => {
-    setIsHovering();
-  };
-
-  const removeAssignee = (assigneeId) => {
-    onRemoveAssignee(assigneeId);
-  };
-
+function AssigneeShow({ assignees }) {
   const uniqueIds = [];
 
   const uniqueAssigneeList = assignees.filter((assignee) => {
@@ -30,31 +53,37 @@ function AssigneeShow({ assignees, onRemoveAssignee }) {
 
   const renderedAssignees = uniqueAssigneeList.map((assignee) => {
     return (
-      <li
-        className={styles.custom_members_list_item}
+      <Tooltip
+        describeChild
+        title={`${assignee.firstName} ${assignee.lastName}`}
+        placement="bottom-start"
         key={assignee.id}
-        onMouseOut={handleMouseOut}
-        onMouseOver={() => handleMouseOver(assignee.id)}
       >
-        <span className={styles.custom_members_name}>{assignee.email}</span>
-        {isHovering === assignee.id && (
-          <div
-            className={styles.custom_members_icon}
-            onClick={() => removeAssignee(assignee.id)}
-          >
-            <a>
-              <AiOutlineClose />
-            </a>
-          </div>
-        )}
-      </li>
+        <Avatar
+          {...stringAvatar(`${assignee.firstName} ${assignee.lastName}`)}
+        />
+      </Tooltip>
     );
   });
 
   return (
-    <ul className={`${styles.custom_assignee_list}`}>
-      {assignees && renderedAssignees}
-    </ul>
+    <Stack
+      className={`${styles.custom_assignee_list}`}
+      direction="row"
+      spacing={assignees.length < 4 && 0.5}
+    >
+      {assignees.length >= 4 && (
+        <AvatarGroup
+          sx={{
+            "& .MuiAvatar-root": { width: 30, height: 30, fontSize: 14 },
+          }}
+        >
+          {assignees && renderedAssignees}
+        </AvatarGroup>
+      )}
+
+      {assignees.length < 4 && <>{assignees && renderedAssignees}</>}
+    </Stack>
   );
 }
 

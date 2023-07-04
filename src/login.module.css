@@ -713,6 +713,7 @@ input[type="submit"] {
   display: flex;
   align-items: center;
   margin-top: 8px;
+  width: 100%;
 }
 
 /* .task_card:hover {
@@ -724,6 +725,7 @@ input[type="submit"] {
 } */
 
 .task_card_title {
+  margin-left: 5px;
   font-size: 14px;
   font-weight: 400;
   color: #172b4d;
@@ -1031,7 +1033,8 @@ input[type="submit"] {
   display: block;
   height: 32px;
   margin-top: 8px;
-  max-width: 300px;
+  min-width: 300px;
+  max-width: 400px;
   overflow: hidden;
   padding: 6px 12px;
   position: relative;
@@ -1128,6 +1131,12 @@ input[type="submit"] {
 
 .pop_over_content {
   height: 206px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 12px 12px;
+}
+
+.pop_working_hours_content {
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0 12px 12px;
@@ -1629,7 +1638,7 @@ input[type="submit"] {
   cursor: pointer;
   font-size: 12px;
   align-items: center;
-  border-radius: 2px;
+  border-radius: 4px;
   width: fit-content;
 }
 
@@ -1960,18 +1969,18 @@ input[type="submit"] {
   width: 16px;
   background-color: #ffffff;
   border-radius: 2px;
-  border: none;
   box-shadow: inset 0 0 0 2px #cccc;
   margin: auto 4px auto 0;
   overflow: hidden;
   position: relative;
   transition: all 0.2 ease-in-out;
   white-space: nowrap;
-  outline: none;
 }
 
 .complete_task_checkbox:checked {
-  box-shadow: inset 0 0 0 2px #026aa7;
+  outline: none;
+  box-shadow: none;
+  border: none;
 }
 
 /* ########################################################## 
@@ -1992,7 +2001,8 @@ input[type="submit"] {
   height: 100%;
   width: 100%;
   position: fixed;
-  background-color: #ebecf0;
+  background-image: url("./images/pexels-eberhard-grossgasteiger-1287075.jpg");
+  background-position: center center;
   top: 0;
   left: 0;
 } */
