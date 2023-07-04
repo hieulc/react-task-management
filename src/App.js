@@ -6,12 +6,9 @@ import Navbar from "./components/Nav";
 import BoardPage from "./pages/BoardPage";
 import TemplatePage from "./pages/TemplatePage";
 import BoardDetailPage from "./pages/BoardDetailPage";
-import RegisterPage from "./pages/RegisterPage";
 import useToken from "./hooks/useToken";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 
 function App() {
   const { token, setToken, logout, user, setUser } = useToken();
@@ -32,7 +29,6 @@ function App() {
     );
   } else {
     return (
-      // <DndProvider backend={HTML5Backend}>
       <div className="main_content">
         <div className="nav_container">
           <Navbar logout={logout} />
@@ -53,7 +49,6 @@ function App() {
           </div>
         </div>
       </div>
-      // </DndProvider>
     );
   }
 }
