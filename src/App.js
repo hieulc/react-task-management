@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import SideBar from "./components/SideBar";
-import Home from "./pages/Home";
+import TaskPage from "./pages/TaskPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Navbar from "./components/Nav";
 import BoardPage from "./pages/BoardPage";
@@ -9,6 +9,7 @@ import BoardDetailPage from "./pages/BoardDetailPage";
 import useToken from "./hooks/useToken";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
+import EnhanceSideBar from "./components/EnhanceSideBar";
 
 function App() {
   const { token, setToken, logout, user, setUser } = useToken();
@@ -33,19 +34,20 @@ function App() {
         <div className="nav_container">
           <Navbar logout={logout} />
         </div>
-        <div className="flex flex-row">
-          <SideBar />
-          <div className="page-content">
-            <Routes>
-              <Route path="/" element={<Navigate to="/boards" />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/boards">
-                <Route index element={<BoardPage />} />
-                <Route path=":id" element={<BoardDetailPage />} />
-              </Route>
-              <Route path="/admin" element={<TemplatePage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
+        <div className="btm_content">
+          <div className="sidebar_content_container">
+            <EnhanceSideBar />
+            {/* <SideBar /> */}
+            <div className="page-content">
+              <Routes>
+                <Route path="/" element={<Navigate to="/boards" />} />
+                <Route path="/tasks" element={<TaskPage />} />
+                <Route path="/boards" element={<BoardPage />} />
+                <Route path="/p/:id" element={<BoardDetailPage />} />
+                <Route path="/admin" element={<TemplatePage />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </div>
           </div>
         </div>
       </div>

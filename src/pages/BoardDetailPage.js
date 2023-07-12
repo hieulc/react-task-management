@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useProjectContext from "../hooks/useProjectContext";
 import styles from "../login.module.css";
 import authHeader from "../services/auth-header";
@@ -13,8 +13,6 @@ import ListCreate from "../components/ListCreate";
 import ListTaskList from "../components/ListTaskList";
 import MemberDropdown from "../components/MemberDropdown";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { produce } from "immer";
-import { useImmer } from "use-immer";
 
 function BoardDetailPage() {
   const { addMemberToProject } = useProjectContext();
@@ -30,18 +28,17 @@ function BoardDetailPage() {
   const [categories, setCategories] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const path = useLocation().pathname;
+  const path = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
   const headers = authHeader(user);
 
-  const projectId = Number(path.substring(8));
-
-  const getProjectById = useCallback(async () => {
-    const response = await axios.get(PROJECT_API + `/project/${projectId}`, {
+  const getProjectById = useCallback(async (id) => {
+    const response = await axios.get(PROJECT_API + `/project/${id}`, {
       headers,
     });
 
     const updatedProject = response.data;
+    console.log(response.data);
 
     const newProject = { ...updatedProject, ...project };
 
@@ -51,8 +48,9 @@ function BoardDetailPage() {
   }, []);
 
   useEffect(() => {
-    getProjectById();
-  }, [getProjectById]);
+    let id = path.id;
+    getProjectById(id);
+  }, [getProjectById, path.id]);
 
   const handleClick = () => {
     setIsFound(true);
@@ -677,7 +675,7 @@ function BoardDetailPage() {
     return (
       <div>
         <div className={styles.login_form}>
-          <h1>Not found any project with ID: {projectId}</h1>
+          <h1>Not found any project with ID: {path.id}</h1>
         </div>
         <div
           className={`btn ${styles.register_btn}`}

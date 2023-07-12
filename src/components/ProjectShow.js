@@ -154,7 +154,7 @@ function ProjectShow({ project }) {
   let content = <h3>{project.projectName}</h3>;
 
   const toBoardDetail = () => {
-    navigate(`/boards/${project.projectId}`);
+    navigate(`/p/${project.projectId}`);
   };
 
   const isAdmin = project.createdBy === user.username;

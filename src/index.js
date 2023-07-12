@@ -7,16 +7,19 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "./context/projects";
 import { ProjectProvider } from "./context/project";
 import { TaskProvider } from "./context/tasks";
+import { SidebarProvider } from "./context/sidebarContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
-    <Provider>
-      <ProjectProvider>
-        <TaskProvider>
-          <App />
-        </TaskProvider>
-      </ProjectProvider>
-    </Provider>
+    <SidebarProvider>
+      <Provider>
+        <ProjectProvider>
+          <TaskProvider>
+            <App />
+          </TaskProvider>
+        </ProjectProvider>
+      </Provider>
+    </SidebarProvider>
   </BrowserRouter>
 );

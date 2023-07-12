@@ -8,6 +8,7 @@ function Provider({ children }) {
   const [projects, setProjects] = useState([]);
 
   const fetchProjects = useCallback(async (authHeader, username) => {
+    console.log("called");
     const response = await axios.get(PROJECT_API + "/employees/pages", {
       params: {
         username,

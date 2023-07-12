@@ -6,7 +6,7 @@ function SideBar() {
   const links = [
     { label: "Boards", path: "/boards", icon: <FaTrello /> },
     { label: "Admin", path: "/admin", icon: <FaElementor /> },
-    { label: "Home", path: "/", icon: <TbActivityHeartbeat /> },
+    { label: "Tasks", path: "/tasks", icon: <TbActivityHeartbeat /> },
   ];
 
   const { username } = JSON.parse(localStorage.getItem("user"));

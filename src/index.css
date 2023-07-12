@@ -8,22 +8,22 @@
   margin: 0;
 }
 
-#root {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
 body {
-  font-size: 16px;
+  box-sizing: border-box;
+  font-size: 14px;
   line-height: 20px;
   font-weight: 400;
   background-color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  height: 100%;
 }
 
 .main_content {
-  overflow-x: auto;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: auto;
 }
 
 .site-title {
@@ -46,7 +46,7 @@ body {
 }
 
 .nav {
-  background-color: #026aa7;
+  background-color: hsla(215, 90%, 32.7%);
   color: #fff;
   align-items: center;
   gap: 2rem;
@@ -115,20 +115,56 @@ body {
 .sidebar-menu {
   display: flex;
   align-items: center;
-  padding: 13px 30px;
-  border-bottom: 1px solid #333;
+  padding-left: 16px;
+  height: 32px;
+  width: 100%;
+}
+
+.sidebar-menu:hover {
+  background-color: hsla(0, 0%, 100%, 0.16);
 }
 
 .sidebar-icons {
-  margin-right: 5px;
+  margin-right: 12px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.sidebar-link {
+  font-size: 14px;
+  font-weight: 400;
+  width: 100%;
+}
+
+.active-sidebar {
+  background-color: hsla(0, 0%, 100%, 0.3);
 }
 
 .page-content {
-  padding-left: 40px;
+  padding-left: 8px;
   padding-top: 10px;
   width: 100%;
   height: 100%;
-  align-items: stretch;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-grow: 1;
+  margin-left: 8px;
+}
+
+.btm_content {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  outline: none;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.sidebar_content_container {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 0%;
+  position: relative;
 }
 
 .card {
@@ -184,7 +220,7 @@ body {
 
 .flex-container {
   display: flex;
-  align-items: stretch;
+  gap: 7px;
 }
 
 .project-show {
@@ -252,8 +288,19 @@ body {
   background-color: #ffedeb;
 }
 
+.show_yellow_background {
+  color: #974f0c;
+  background-color: #fff7d6;
+}
+
+.show_grey_background {
+  background-color: #ddd;
+  color: #172b4d;
+}
+
 .show_normal_due_date {
-  color: #44546f;
+  background-color: #ddd;
+  color: #172b4d;
 }
 
 .show_darker_color {
@@ -267,7 +314,18 @@ body {
 
 .drop-zone {
   background-color: rgba(255, 255, 255, 0.1);
-  margin: 0 10px 8px 10px;
   border-radius: 12px;
-  width: fit-content;
+  margin: 0px 10px 10px 10px;
+}
+
+.normal-drop-zone {
+  overflow: auto;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-height: 0;
+  margin: 0 4px;
+  padding: 1px 4px 0;
+  justify-content: space-between;
 }

@@ -111,7 +111,9 @@ function ListTask({
                       <div
                         {...provided.droppableProps}
                         ref={provided.innerRef}
-                        className={`${tasks.length === 0 ? "drop-zone" : ""}`}
+                        className={`${
+                          tasks.length === 0 ? "drop-zone" : "normal-drop-zone"
+                        }`}
                         style={{
                           ...provided.droppableProps.style,
                           minHeight:
