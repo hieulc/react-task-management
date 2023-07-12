@@ -1,12 +1,20 @@
 import { Link, useLocation } from "react-router-dom";
 import classNames from "classnames";
 
-function CustomLink({ to, children, className, activeClassName, icon }) {
+function CustomLink({
+  to,
+  children,
+  className,
+  activeClassName,
+  icon,
+  activeIcon,
+  fetchProjects,
+}) {
   const currentPath = useLocation().pathname;
   const isActive = currentPath === to;
 
   const classes = classNames(
-    "sidebar-menu text-black",
+    "sidebar-menu text-white",
     className,
     isActive && activeClassName
   );
@@ -14,7 +22,8 @@ function CustomLink({ to, children, className, activeClassName, icon }) {
   return (
     <div className={classes}>
       <Link to={to} className="sidebar-icons">
-        {icon}
+        {!isActive && icon}
+        {isActive && activeIcon}
       </Link>
       <Link to={to} className="sidebar-link">
         {children}
